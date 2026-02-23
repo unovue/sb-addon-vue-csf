@@ -1,1 +1,1 @@
-export * from './identifier-utils.js';
+export * from './identifier-utils.js'

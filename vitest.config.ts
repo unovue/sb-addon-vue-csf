@@ -1,12 +1,12 @@
-import { defineConfig } from 'vitest/config';
-import vue from '@vitejs/plugin-vue';
-import { resolve } from 'path';
+import { resolve } from 'node:path'
+import vue from '@vitejs/plugin-vue'
+import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      '$lib': resolve(__dirname, 'src'),
+      $lib: resolve(__dirname, 'src'),
     },
   },
   test: {
@@ -14,4 +14,4 @@ export default defineConfig({
     environment: 'happy-dom',
     include: ['src/**/*.{test,spec}.{js,ts}'],
   },
-});
+})

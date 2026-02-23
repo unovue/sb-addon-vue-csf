@@ -1,9 +1,9 @@
-# Vue CSF
+# addon-vue-csf
 
 This Storybook addon allows you to write Storybook stories using Vue Single File Component syntax instead of ESM that regular CSF is based on.
 
 ```bash
-npx storybook@latest add @storybook/addon-vue-csf
+npx storybook@latest add addon-vue-csf
 ```
 
 Using Vue SFC syntax makes it easier to write stories for Vue components with proper template support, slots, and composition patterns.
@@ -15,23 +15,23 @@ Using Vue SFC syntax makes it easier to write stories for Vue components with pr
 The easiest way to install the addon is with `storybook add`:
 
 ```bash
-npx storybook@latest add @storybook/addon-vue-csf
+npx storybook@latest add addon-vue-csf
 ```
 
 You can also add the addon manually. First, install the package:
 
 ```bash
-npm install --save-dev @storybook/addon-vue-csf
+npm install --save-dev addon-vue-csf
 ```
 
 Then modify your `main.ts` Storybook configuration to include the addon and include `*.stories.vue` files:
 
 ```diff
 export default {
--  stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)',
+-  stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
 +  stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx|vue)'],
   addons: [
-+    '@storybook/addon-vue-csf',
++    'addon-vue-csf',
     ...
   ],
   ...
@@ -50,20 +50,20 @@ All stories files must have a "meta" (aka. "default export") defined, and its st
 
 ```vue
 <script setup>
-  import { defineMeta } from '@storybook/addon-vue-csf';
-  import MyComponent from './MyComponent.vue';
+import { defineMeta } from 'addon-vue-csf';
+import MyComponent from './MyComponent.vue';
 
-  //      👇 Get the Story component from the return value
-  const { Story } = defineMeta({
-    title: 'Path/To/MyComponent',
-    component: MyComponent,
-    decorators: [
-      /* ... */
-    ],
-    parameters: {
-      /* ... */
-    },
-  });
+//      👇 Get the Story component from the return value
+const { Story } = defineMeta({
+  title: 'Path/To/MyComponent',
+  component: MyComponent,
+  decorators: [
+    /* ... */
+  ],
+  parameters: {
+    /* ... */
+  },
+});
 </script>
 ```
 
@@ -113,7 +113,7 @@ If you need more customization of the story, like composing components, you can 
 </template>
 ```
 
-> [!IMPORTANT]  
+> [!IMPORTANT]
 > This format completely ignores args, as they are not passed down to any of the child components defined. Even if your story has args and Controls, they won't have an effect.
 
 #### With template slot
@@ -136,25 +136,25 @@ If you only need a single template that you want to share among multiple stories
 
 ```vue
 <script setup>
-  import { defineMeta } from '@storybook/addon-vue-csf';
-  import MyComponent from './MyComponent.vue';
+import { defineMeta } from 'addon-vue-csf';
+import MyComponent from './MyComponent.vue';
 
-  const { Story } = defineMeta({
-    title: 'MyComponent',
-    component: MyComponent,
-    render: template,
-  });
+const { Story } = defineMeta({
+  title: 'MyComponent',
+  component: MyComponent,
+  render: template,
+});
 
-  // Define the default template
-  function template(args) {
-    return {
-      components: { MyComponent },
-      setup() {
-        return { args };
-      },
-      template: '<MyComponent v-bind="args" />',
-    };
-  }
+// Define the default template
+function template(args) {
+  return {
+    components: { MyComponent },
+    setup() {
+      return { args };
+    },
+    template: '<MyComponent v-bind="args" />',
+  };
+}
 </script>
 
 <template>
@@ -176,24 +176,87 @@ You can explicitly define the variable name of any story by passing the `exportN
 </template>
 ```
 
+At least one of the `name` or `exportName` props must be passed to the `Story` component - passing both is also valid.
+
 ### TypeScript
 
 Story template snippets can be type-safe when necessary. The type of the args are inferred from the `component` or `render` property passed to `defineMeta`.
 
 ```vue
 <script setup lang="ts">
-  import { defineMeta } from '@storybook/addon-vue-csf';
-  import type { ComponentProps } from 'vue-component-type-helpers';
+import { defineMeta } from 'addon-vue-csf';
+import type { ComponentProps } from 'vue-component-type-helpers';
 
-  import MyComponent from './MyComponent.vue';
+import MyComponent from './MyComponent.vue';
 
-  const { Story } = defineMeta({
-    component: MyComponent,
-  });
+const { Story } = defineMeta({
+  component: MyComponent,
+});
 
-  type Args = ComponentProps<typeof MyComponent>;
+type Args = ComponentProps<typeof MyComponent>;
 </script>
+
+<template>
+  <Story name="Primary" :args="{ primary: true }" />
+</template>
 ```
+
+Or using Vue's `SetupContext` types:
+
+```vue
+<script setup lang="ts">
+import { defineMeta } from 'addon-vue-csf';
+import MyComponent from './MyComponent.vue';
+
+const { Story } = defineMeta({
+  component: MyComponent,
+});
+</script>
+
+<template>
+  <Story name="Primary" :args="{ primary: true }">
+    <template #template="{ args }: { args: InstanceType<typeof MyComponent>['$props'] }">
+      <MyComponent v-bind="args" />
+    </template>
+  </Story>
+</template>
+```
+
+## API Reference
+
+### `defineMeta(meta)`
+
+Defines the metadata for a stories file.
+
+**Parameters:**
+- `meta` - Object containing Storybook meta properties:
+  - `title` - The title/path for the component in Storybook
+  - `component` - The component being documented
+  - `decorators` - Array of decorators
+  - `parameters` - Parameters object
+  - `args` - Default args for all stories
+  - `argTypes` - ArgTypes for controls
+  - `tags` - Tags for the stories (e.g., `['autodocs']`)
+  - `render` - Default render function for stories
+
+**Returns:**
+- Object with `Story` component that must be destructured and used in the template
+
+### `<Story />` Props
+
+- `name` - The name of the story (displayed in sidebar)
+- `exportName` - The export name (used for the variable name in CSF)
+- `args` - Args for the story (passed as props to component)
+- `argTypes` - ArgTypes for this specific story
+- `parameters` - Parameters for this story
+- `tags` - Tags for this story
+- `play` - Play function for interactions
+- `asChild` - When true, renders children directly without wrapping in the meta component
+
+### `<Story />` Slots
+
+- `default` - Default slot content (becomes children of the meta component)
+- `template` - Template slot that receives `{ args, context }` for custom rendering
 
 ## Version Compatibility
 

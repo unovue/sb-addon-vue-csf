@@ -2,8 +2,8 @@
 /**
  * Button stories using Vue CSF
  */
-import { defineMeta } from '@storybook/addon-vue-csf';
-import Button from './Button.vue';
+import { defineMeta } from 'addon-vue-csf'
+import Button from './Button.vue'
 
 const { Story } = defineMeta({
   title: 'Example/Button',
@@ -17,16 +17,7 @@ const { Story } = defineMeta({
     backgroundColor: { control: 'color' },
     onClick: { action: 'clicked' },
   },
-});
-
-// Template for stories with args
-const Template = (args: any) => ({
-  components: { Button },
-  setup() {
-    return { args };
-  },
-  template: '<Button v-bind="args" />',
-});
+})
 </script>
 
 <template>
@@ -66,8 +57,8 @@ const Template = (args: any) => ({
   />
 
   <!-- With custom template -->
-  <Story name="WithCustomTemplate" args="{ label: 'Custom Template' }">
-    <template #template="{ args, context }">
+  <Story name="WithCustomTemplate" :args="{ label: 'Custom Template' }">
+    <template #template="{ args }">
       <div style="padding: 20px; background: #f0f0f0;">
         <Button v-bind="args" />
       </div>

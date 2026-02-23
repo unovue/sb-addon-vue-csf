@@ -1,25 +1,25 @@
-import { describe, it, expect } from 'vitest';
-import { getVueSfcAST, isVueStoriesFile } from './ast.js';
+import { describe, expect, it } from 'vitest'
+import { getVueSfcAST, isVueStoriesFile } from './ast.js'
 
 describe('ast', () => {
   describe('isVueStoriesFile', () => {
     it('should return true for .stories.vue files', () => {
-      expect(isVueStoriesFile('Button.stories.vue')).toBe(true);
-      expect(isVueStoriesFile('src/components/Button.stories.vue')).toBe(true);
-    });
+      expect(isVueStoriesFile('Button.stories.vue')).toBe(true)
+      expect(isVueStoriesFile('src/components/Button.stories.vue')).toBe(true)
+    })
 
     it('should return false for non-stories files', () => {
-      expect(isVueStoriesFile('Button.vue')).toBe(false);
-      expect(isVueStoriesFile('Button.svelte')).toBe(false);
-      expect(isVueStoriesFile('Button.ts')).toBe(false);
-    });
-  });
+      expect(isVueStoriesFile('Button.vue')).toBe(false)
+      expect(isVueStoriesFile('Button.svelte')).toBe(false)
+      expect(isVueStoriesFile('Button.ts')).toBe(false)
+    })
+  })
 
   describe('getVueSfcAST', () => {
     it('should parse a Vue SFC', () => {
       const code = `
 <script setup>
-import { defineMeta } from '@storybook/addon-vue-csf';
+import { defineMeta } from 'addon-vue-csf';
 const { Story } = defineMeta({
   title: 'Example/Button',
 });
@@ -28,14 +28,14 @@ const { Story } = defineMeta({
 <template>
   <Story name="Primary" />
 </template>
-      `;
+      `
 
-      const ast = getVueSfcAST({ code, filename: 'test.stories.vue' });
+      const ast = getVueSfcAST({ code, filename: 'test.stories.vue' })
 
-      expect(ast.errors).toHaveLength(0);
-      expect(ast.descriptor.scriptSetup).toBeDefined();
-      expect(ast.descriptor.template).toBeDefined();
-    });
+      expect(ast.errors).toHaveLength(0)
+      expect(ast.descriptor.scriptSetup).toBeDefined()
+      expect(ast.descriptor.template).toBeDefined()
+    })
 
     it('should parse a Vue SFC with script tag', () => {
       const code = `
@@ -48,13 +48,13 @@ export default {
 <template>
   <div>Hello</div>
 </template>
-      `;
+      `
 
-      const ast = getVueSfcAST({ code, filename: 'test.vue' });
+      const ast = getVueSfcAST({ code, filename: 'test.vue' })
 
-      expect(ast.errors).toHaveLength(0);
-      expect(ast.descriptor.script).toBeDefined();
-      expect(ast.descriptor.template).toBeDefined();
-    });
-  });
-});
+      expect(ast.errors).toHaveLength(0)
+      expect(ast.descriptor.script).toBeDefined()
+      expect(ast.descriptor.template).toBeDefined()
+    })
+  })
+})

@@ -3,36 +3,36 @@
  * Button component for examples
  */
 interface Props {
-  label: string;
-  primary?: boolean;
-  size?: 'small' | 'medium' | 'large';
-  backgroundColor?: string;
-  disabled?: boolean;
+  label: string
+  primary?: boolean
+  size?: 'small' | 'medium' | 'large'
+  backgroundColor?: string
+  disabled?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   primary: false,
   size: 'medium',
-});
+})
 
 const emit = defineEmits<{
-  click: [event: MouseEvent];
-}>();
+  click: [event: MouseEvent]
+}>()
 
 const classes = {
   'storybook-button': true,
   'storybook-button--primary': props.primary,
   'storybook-button--secondary': !props.primary,
   [`storybook-button--${props.size}`]: true,
-};
+}
 
 const style = {
   backgroundColor: props.backgroundColor,
-};
+}
 
-const onClick = (e: MouseEvent) => {
-  emit('click', e);
-};
+function onClick(e: MouseEvent) {
+  emit('click', e)
+}
 </script>
 
 <template>
