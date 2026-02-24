@@ -31,7 +31,6 @@ export async function transformStoriesCode(options: TransformStoriesCodeOptions)
   removeExportDefault(code, nodes.compiled)
   // Create and append the CSF exports
   const appendix = createAppendix(nodes.vue, filename)
-  console.log(appendix)
   code.append(`
 ${appendix}`)
 }

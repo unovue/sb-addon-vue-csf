@@ -54,6 +54,8 @@ export async function transformPlugin(): Promise<Plugin> {
         originalCode: rawCode,
       })
 
+      console.log(magicCompiledCode.toString())
+
       return {
         code: magicCompiledCode.toString(),
         map: magicCompiledCode.generateMap({ hires: true, source: id }),

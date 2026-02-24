@@ -51,9 +51,9 @@ const classes = computed(() => {
   }
 })
 
-const style = {
+const style = computed(() => ({
   backgroundColor: props.backgroundColor,
-}
+}))
 
 function onClick(e: MouseEvent) {
   emit('click', e)
