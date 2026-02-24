@@ -5,10 +5,27 @@ import { computed } from 'vue'
  * Button component for examples
  */
 interface Props {
+  /**
+   * The label text displayed on the button
+   */
   label: string
+  /**
+   * Whether the button should use the primary style (blue background)
+   * @default false
+   */
   primary?: boolean
+  /**
+   * The size of the button
+   * @default 'medium'
+   */
   size?: 'small' | 'medium' | 'large'
+  /**
+   * Custom background color for the button
+   */
   backgroundColor?: string
+  /**
+   * Whether the button is disabled
+   */
   disabled?: boolean
 }
 
@@ -18,6 +35,10 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const emit = defineEmits<{
+  /**
+   * Emitted when the button is clicked
+   * @param event - The mouse event from the click
+   */
   click: [event: MouseEvent]
 }>()
 

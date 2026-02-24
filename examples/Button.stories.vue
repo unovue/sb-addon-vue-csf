@@ -16,7 +16,6 @@ const { Story } = defineMeta({
       options: ['small', 'medium', 'large'],
     },
     backgroundColor: { control: 'color' },
-    onClick: { action: 'clicked' },
   },
 })
 </script>

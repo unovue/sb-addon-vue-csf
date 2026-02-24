@@ -16,10 +16,13 @@ export function createAppendix(
   // Use raw source if available, otherwise serialize the properties
   const metaCode = nodes.defineMeta?.rawSource || JSON.stringify(nodes.defineMeta?.properties || {})
 
+  // Check if meta has a render function
+  const hasMetaRender = !!(nodes.defineMeta?.properties && 'render' in nodes.defineMeta.properties)
+
   // Generate story exports with inline render functions
   const storyExports = nodes.stories.map((story) => {
     const exportName = story.exportName || storyNameToExportName(story.name)
-    return createStoryExport(story, exportName, metaCode)
+    return createStoryExport(story, exportName, metaCode, hasMetaRender)
   })
 
   // Generate the runtime stories creation
@@ -52,8 +55,13 @@ export { stories };
   return runtimeCode
 }
 
-function createStoryExport(story: StoryNode, exportName: string, metaCode: string): string {
+function createStoryExport(story: StoryNode, exportName: string, metaCode: string, hasMetaRender: boolean): string {
   const args = story.props.args || story.props || {}
+
+  // Only include metaRenderTemplate if meta has a render function
+  const metaRenderTemplateProp = hasMetaRender
+    ? `\n      metaRenderTemplate: ${metaCode}.render,`
+    : ''
 
   return `
 export const ${exportName} = {
@@ -66,8 +74,7 @@ export const ${exportName} = {
       exportName: ${JSON.stringify(exportName)},
       storiesComponent: __vueCsfComponent,
       storyContext,
-      args,
-      metaRenderTemplate: ${metaCode}.render,
+      args,${metaRenderTemplateProp}
     });
   },
 };

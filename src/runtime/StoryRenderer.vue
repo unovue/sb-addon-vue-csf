@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
-import type { StoryContext } from '../types.js'
+import type { StoryContext } from '../types.ts'
 /**
  * StoryRenderer component
  *

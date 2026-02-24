@@ -6,7 +6,7 @@
  */
 
 import type { InjectionKey, Ref } from 'vue'
-import type { StoryContext } from '../../types.js'
+import type { StoryContext } from '../../types.ts'
 import { inject, provide } from 'vue'
 
 export interface RendererContext {

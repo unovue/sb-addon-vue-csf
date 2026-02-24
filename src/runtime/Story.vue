@@ -1,37 +1,33 @@
-<script setup lang="ts">
-import type { Slot } from 'vue'
-import type { Cmp, StoryAnnotations, StoryContext } from '../types.js'
+<script setup lang="ts" generic="TArgs extends Record<string, any> = Record<string, any>">
+import type { Slot, VNodeChild } from 'vue'
+import type { StoryContext } from '../types.ts'
 /**
  * Story component for Vue CSF
  *
  * This component is used to define stories in .stories.vue files.
  * It receives story configuration as props and renders the story content.
  */
-import { computed, useSlots, watch } from 'vue'
-import { storyNameToExportName } from '../utils/identifier-utils.js'
+import { computed, watch } from 'vue'
+import { storyNameToExportName } from '../utils/identifier-utils.ts'
 import { useStoryRenderer } from './contexts/renderer.ts'
 
-interface StoryProps extends Partial<StoryAnnotations<any, Cmp>> {
-  /**
-   * Name of the story
-   */
+const props = defineProps<{
   name?: string
-  /**
-   * Export name of the story (used for variable name in exports)
-   */
   exportName?: string
-  /**
-   * Render the children as the story content (static mode)
-   */
   asChild?: boolean
-  /**
-   * Template render function
-   */
-  template?: (args: any, context: StoryContext) => any
-}
+  template?: (args: TArgs, context: StoryContext<TArgs>) => any
+  play?: (context: any) => Promise<void> | void
+  args?: Partial<TArgs>
+  argTypes?: any
+  parameters?: Record<string, any>
+  tags?: string[]
+  decorators?: any[]
+  loaders?: any[]
+  globals?: any
+}>()
 
-const props = defineProps<StoryProps>()
-const slots: { default?: Slot, template?: Slot } = useSlots()
+// Define typed slots for better type inference
+const slots = defineSlots<{ default?: Slot, template?: (props: { args: TArgs, context: StoryContext<TArgs> }) => VNodeChild }>()
 
 const exportName = computed(() => props.exportName ?? storyNameToExportName(props.name ?? 'Unnamed'))
 
@@ -39,8 +35,8 @@ const exportName = computed(() => props.exportName ?? storyNameToExportName(prop
 const renderer = useStoryRenderer()
 
 // Computed values from renderer context
-const storyContext = computed(() => renderer?.storyContext?.value)
-const rendererArgs = computed(() => renderer?.args?.value)
+const storyContext = computed<StoryContext<TArgs> | undefined>(() => renderer?.storyContext?.value as StoryContext<TArgs> | undefined)
+const rendererArgs = computed<TArgs | undefined>(() => renderer?.args?.value as TArgs | undefined)
 
 // Check if we're currently viewing this story
 const isCurrentlyViewed = computed(() => {
@@ -78,8 +74,8 @@ const hasDefaultSlot = computed(() => {
     <template v-if="hasTemplate">
       <slot
         name="template"
-        :args="rendererArgs"
-        :context="storyContext"
+        :args="(rendererArgs ?? {}) as TArgs"
+        :context="(storyContext ?? {}) as StoryContext<TArgs>"
       />
     </template>
 
