@@ -163,6 +163,44 @@ function template(args) {
 </template>
 ```
 
+#### Reusable templates with `createReusableTemplate`
+
+For more complex scenarios, you can use `createReusableTemplate` (re-exported from VueUse) combined with `createRenderTemplate` to define reusable templates:
+
+```vue
+<script lang="ts">
+import { createReusableTemplate, createRenderTemplate } from 'addon-vue-csf';
+import Button from './Button.vue';
+
+const [DefineTemplate, ReuseTemplate] = createReusableTemplate();
+export const defaultTemplate = createRenderTemplate(ReuseTemplate);
+</script>
+
+<script setup>
+const { Story } = defineMeta({
+  title: 'Example/Button',
+  component: Button,
+  render: defaultTemplate,
+});
+</script>
+
+<template>
+  <DefineTemplate v-slot="{ args }">
+    <div class="wrapper">
+      <Button v-bind="args" />
+    </div>
+  </DefineTemplate>
+
+  <Story name="Primary" :args="{ primary: true }" />
+  <Story name="Secondary" :args="{ label: 'Button' }" />
+</template>
+```
+
+This approach is especially useful when you want to:
+- Wrap stories with common layout or styling
+- Share template definitions across multiple stories
+- Keep story definitions clean and focused on args
+
 #### Custom export name
 
 Behind-the-scenes, each `<Story />` definition is compiled to a variable export like `export const MyStory = ...;`. The variable names are simplifications of the story names - to make them valid JavaScript variables.
@@ -232,25 +270,50 @@ Defines the metadata for a stories file.
 - `meta` - Object containing Storybook meta properties:
   - `title` - The title/path for the component in Storybook
   - `component` - The component being documented
+  - `subcomponents` - Record of related subcomponents
   - `decorators` - Array of decorators
   - `parameters` - Parameters object
   - `args` - Default args for all stories
   - `argTypes` - ArgTypes for controls
   - `tags` - Tags for the stories (e.g., `['autodocs']`)
   - `render` - Default render function for stories
+  - `play` - Play function for all stories
+  - `loaders` - Loaders for all stories
+  - `globals` - Global parameters for all stories
+  - `beforeEach` - Function to run before each story
 
 **Returns:**
 - Object with `Story` component that must be destructured and used in the template
 
+### `createReusableTemplate()`
+
+Creates a reusable template pair (DefineTemplate and ReuseTemplate). Re-exported from `@vueuse/core` for convenience.
+
+**Returns:**
+- A tuple `[DefineTemplate, ReuseTemplate]` for defining and reusing templates
+
+### `createRenderTemplate(ReuseTemplate)`
+
+Creates a render function for use with `defineMeta`'s render option.
+
+**Parameters:**
+- `ReuseTemplate` - The ReuseTemplate component from `createReusableTemplate()`
+
+**Returns:**
+- A render function compatible with `defineMeta`'s `render` option
+
 ### `<Story />` Props
 
 - `name` - The name of the story (displayed in sidebar)
+
 - `exportName` - The export name (used for the variable name in CSF)
 - `args` - Args for the story (passed as props to component)
 - `argTypes` - ArgTypes for this specific story
 - `parameters` - Parameters for this story
 - `tags` - Tags for this story
 - `play` - Play function for interactions
+- `loaders` - Loaders for this story
+- `globals` - Global parameters for this story
 - `asChild` - When true, renders children directly without wrapping in the meta component
 
 ### `<Story />` Slots
@@ -262,14 +325,12 @@ Defines the metadata for a stories file.
 
 ### latest
 
-Version 1 of this addon requires at least:
-
-| Dependency                                                                                                             | Version  |
-| ---------------------------------------------------------------------------------------------------------------------- | -------- |
-| [Storybook](https://github.com/storybookjs/storybook)                                                                  | `v8.2.0` |
-| [Vue](https://github.com/vuejs/core)                                                                                   | `v3.0.0` |
-| [Vite](https://github.com/vitejs/vite)                                                                                 | `v5.0.0` |
-| [`@vitejs/plugin-vue`](https://github.com/vitejs/vite-plugin-vue)                                                      | `v5.0.0` |
+| Dependency | Version |
+| ---------- | ------- |
+| [Storybook](https://github.com/storybookjs/storybook) | `^8.2.0 \|\| ^9.0.0 \|\| ^10.0.0` |
+| [Vue](https://github.com/vuejs/core) | `^3.0.0` |
+| [Vite](https://github.com/vitejs/vite) | `^5.0.0 \|\| ^6.0.0 \|\| ^7.0.0` |
+| [`@vitejs/plugin-vue`](https://github.com/vitejs/vite-plugin-vue) | `^5.0.0` |
 
 ## 🤝 Contributing
 

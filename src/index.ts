@@ -21,12 +21,26 @@
  * ```
  */
 
+import type { Component, VNode } from 'vue'
 import type { Cmp, Meta } from './types'
+import { h } from 'vue'
 import StoryComponent from './runtime/Story.vue'
 import StoryRendererComponent from './runtime/StoryRenderer.vue'
 
 export type { StoryContext } from './types'
 export { StoryRendererComponent as StoryRenderer }
+
+// Re-export types from ./types
+export type {
+  Cmp,
+  Meta,
+  StoriesRepository,
+  StoryAnnotations,
+  TemplateRenderFn,
+} from './types'
+
+// Re-export createReusableTemplate from VueUse for convenience
+export { createReusableTemplate } from '@vueuse/core'
 
 /**
  * Define metadata for a stories file
@@ -52,12 +66,42 @@ export type Args<TStoryCmp> = TStoryCmp extends typeof StoryComponent
   : never
 
 /**
- * Re-export types
+ * Create a render function for use with defineMeta's render option
+ *
+ * This helper creates a render function that renders a VueUse ReuseTemplate component.
+ * Use this with createReusableTemplate to define a default template for all stories.
+ *
+ * @example
+ * ```vue
+ * <script lang="ts">
+ * import { createReusableTemplate, createRenderTemplate } from 'addon-vue-csf';
+ * import Button from './Button.vue';
+ *
+ * const [DefineTemplate, ReuseTemplate] = createReusableTemplate();
+ * export const defaultTemplate = createRenderTemplate(ReuseTemplate);
+ * </script>
+ *
+ * <script setup>
+ * const { Story } = defineMeta({
+ *   title: 'Example/Button',
+ *   component: Button,
+ *   render: defaultTemplate,
+ * });
+ * </script>
+ *
+ * <template>
+ *   <DefineTemplate v-slot="{ args }">
+ *     <div class="wrapper">
+ *       <Button v-bind="args" />
+ *     </div>
+ *   </DefineTemplate>
+ *
+ *   <Story name="Primary" :args="{ primary: true }" />
+ * </template>
+ * ```
  */
-export type {
-  Cmp,
-  Meta,
-  StoriesRepository,
-  StoryAnnotations,
-  TemplateRenderFn,
-} from './types'
+export function createRenderTemplate<TArgs = Record<string, unknown>>(
+  reuseTemplate: Component,
+): (args: TArgs) => VNode {
+  return (args: TArgs) => h(reuseTemplate, { args })
+}

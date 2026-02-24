@@ -32,7 +32,7 @@ export function createIndexer(_legacyTemplate: boolean = false): Indexer {
           type: 'story',
           importPath: fileName,
           exportName,
-          name: story.name,
+          name: story.name || undefined,
           title,
           tags: (story.props.tags as string[]) || [],
         })

@@ -16,18 +16,20 @@ export function createAppendix(
   // Use raw source if available, otherwise serialize the properties
   const metaCode = nodes.defineMeta?.rawSource || JSON.stringify(nodes.defineMeta?.properties || {})
 
-  // Check if meta has a render function
-  const hasMetaRender = !!(nodes.defineMeta?.properties && 'render' in nodes.defineMeta.properties)
+  // Check if meta has a render function (by checking if we extracted a render function name)
+  const renderFunctionName = nodes.defineMeta?.renderFunctionName
+  const hasMetaRender = !!renderFunctionName
 
   // Generate story exports with inline render functions
   const storyExports = nodes.stories.map((story) => {
     const exportName = story.exportName || storyNameToExportName(story.name)
-    return createStoryExport(story, exportName, metaCode, hasMetaRender)
+    return createStoryExport(story, exportName, metaCode, hasMetaRender, renderFunctionName)
   })
 
   // Generate the runtime stories creation
+  // Use a unique alias for h to avoid conflicts with user imports
   const runtimeCode = `
-import { h } from 'vue';
+import { h as __vueCsfH } from 'vue';
 // import { StoryRenderer } from 'addon-vue-csf';
 import { StoryRenderer } from '../dist/index.js';
 
@@ -55,22 +57,33 @@ export { stories };
   return runtimeCode
 }
 
-function createStoryExport(story: StoryNode, exportName: string, metaCode: string, hasMetaRender: boolean): string {
+function createStoryExport(
+  story: StoryNode,
+  exportName: string,
+  metaCode: string,
+  hasMetaRender: boolean,
+  renderFunctionName?: string,
+): string {
   const args = story.props.args || story.props || {}
 
-  // Only include metaRenderTemplate if meta has a render function
-  const metaRenderTemplateProp = hasMetaRender
-    ? `\n      metaRenderTemplate: ${metaCode}.render,`
-    : ''
+  // Build metaRenderTemplate property
+  let metaRenderTemplateProp = ''
+  if (hasMetaRender && renderFunctionName) {
+    // Reference the render function from module scope
+    metaRenderTemplateProp = `\n      metaRenderTemplate: ${renderFunctionName},`
+  }
+
+  // Use exportName as display name if no explicit name was provided
+  const displayName = story.name || exportName
 
   return `
 export const ${exportName} = {
-  name: ${JSON.stringify(story.name)},
+  name: ${JSON.stringify(displayName)},
   args: ${JSON.stringify(args)},
   parameters: ${JSON.stringify(story.props.parameters || {})},
   tags: ${JSON.stringify(story.props.tags || [])},
   render: (args, storyContext) => {
-    return h(StoryRenderer, {
+    return __vueCsfH(StoryRenderer, {
       exportName: ${JSON.stringify(exportName)},
       storiesComponent: __vueCsfComponent,
       storyContext,

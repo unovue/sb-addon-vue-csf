@@ -85,7 +85,7 @@ describe('extractStories from AST', () => {
     })
   })
 
-  it('should handle story without name (defaults to Unnamed)', async () => {
+  it('should handle story without name (defaults to empty string)', async () => {
     const code = `<template>
   <Story :args="{ label: 'Test' }" />
 </template>`
@@ -94,7 +94,7 @@ describe('extractStories from AST', () => {
     const nodes = await extractVueASTNodes({ ast, filename: 'test.stories.vue' })
 
     expect(nodes.stories).toHaveLength(1)
-    expect(nodes.stories[0].name).toBe('Unnamed')
+    expect(nodes.stories[0].name).toBe('')
   })
 
   it('should handle empty template', async () => {
@@ -119,5 +119,44 @@ describe('extractStories from AST', () => {
 
     expect(nodes.stories).toHaveLength(1)
     expect(nodes.stories[0].name).toBe('Nested')
+  })
+
+  it('should extract custom exportName from static attribute', async () => {
+    const code = `<template>
+  <Story export-name="CustomExport" :args="{ label: 'Test' }" />
+</template>`
+
+    const ast = createAst(code)
+    const nodes = await extractVueASTNodes({ ast, filename: 'test.stories.vue' })
+
+    expect(nodes.stories).toHaveLength(1)
+    expect(nodes.stories[0].exportName).toBe('CustomExport')
+    expect(nodes.stories[0].name).toBe('')
+  })
+
+  it('should use name as exportName when only name is provided', async () => {
+    const code = `<template>
+  <Story name="My Story" :args="{ label: 'Test' }" />
+</template>`
+
+    const ast = createAst(code)
+    const nodes = await extractVueASTNodes({ ast, filename: 'test.stories.vue' })
+
+    expect(nodes.stories).toHaveLength(1)
+    expect(nodes.stories[0].name).toBe('My Story')
+    expect(nodes.stories[0].exportName).toBe('My Story')
+  })
+
+  it('should prioritize exportName over name for export name', async () => {
+    const code = `<template>
+  <Story name="My Story!" export-name="MyStoryClean" :args="{ label: 'Test' }" />
+</template>`
+
+    const ast = createAst(code)
+    const nodes = await extractVueASTNodes({ ast, filename: 'test.stories.vue' })
+
+    expect(nodes.stories).toHaveLength(1)
+    expect(nodes.stories[0].name).toBe('My Story!')
+    expect(nodes.stories[0].exportName).toBe('MyStoryClean')
   })
 })

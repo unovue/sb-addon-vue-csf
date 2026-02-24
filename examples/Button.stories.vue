@@ -64,4 +64,9 @@ const { Story } = defineMeta({
       </div>
     </template>
   </Story>
+
+  <!-- With asChild: renders children directly without wrapping in component -->
+  <Story name="WithAsChild" :args="{ label: 'As Child Button' }" as-child>
+    <Button :primary="true" label="Custom Rendered Button" />
+  </Story>
 </template>

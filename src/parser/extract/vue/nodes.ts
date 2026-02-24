@@ -80,6 +80,10 @@ export interface DefineMetaNode {
    * This is the object literal string that can be used in generated code
    */
   rawSource?: string
+  /**
+   * The name of the render function if render is a function reference
+   */
+  renderFunctionName?: string
 }
 
 export interface ExtractedVueNodes {
@@ -102,8 +106,9 @@ export async function extractVueASTNodes({
 }): Promise<ExtractedVueNodes> {
   const { descriptor } = ast
 
-  // Extract from script or script setup
-  const scriptContent = descriptor.script?.content || descriptor.scriptSetup?.content || ''
+  // Extract from script setup (preferred) or regular script
+  // Note: script setup is where defineMeta is typically defined
+  const scriptContent = descriptor.scriptSetup?.content || descriptor.script?.content || ''
 
   // Use AST-based extraction for defineMeta
   const defineMeta = extractDefineMeta(scriptContent)
@@ -152,9 +157,15 @@ function extractDefineMeta(scriptContent: string): DefineMetaNode | null {
     }
     const balancedObjStr = objStr.substring(0, endIndex)
 
+    // Extract render function name if render is a function reference
+    // Matches patterns like: render: defaultTemplate, or render: myRender,
+    const renderFunctionMatch = /render\s*:\s*(\w+)/.exec(balancedObjStr)
+    const renderFunctionName = renderFunctionMatch ? renderFunctionMatch[1] : undefined
+
     return {
       properties: parseObjectLiteral(balancedObjStr),
       rawSource: balancedObjStr.trim(),
+      renderFunctionName,
     }
   }
   catch {
@@ -216,9 +227,12 @@ function extractStoryFromElement(element: TemplateNode): StoryNode | null {
       if (prop.name === 'name') {
         name = String(value)
         props.name = name
-        exportName = name
+        // Only set exportName from name if exportName wasn't explicitly provided
+        if (!exportName) {
+          exportName = name
+        }
       }
-      else if (prop.name === 'exportName') {
+      else if (prop.name === 'exportName' || prop.name === 'export-name') {
         exportName = String(value)
         props.exportName = exportName
       }
@@ -247,9 +261,12 @@ function extractStoryFromElement(element: TemplateNode): StoryNode | null {
           // Handle :name="expression"
           name = expContent
           props.name = expContent
-          exportName = expContent
+          // Only set exportName from name if exportName wasn't explicitly provided
+          if (!exportName) {
+            exportName = expContent
+          }
         }
-        else if (argName === 'exportName' && expContent) {
+        else if ((argName === 'exportName' || argName === 'export-name') && expContent) {
           exportName = expContent
           props.exportName = expContent
         }
@@ -268,7 +285,7 @@ function extractStoryFromElement(element: TemplateNode): StoryNode | null {
   const template = element.loc?.source
 
   return {
-    name: name || 'Unnamed',
+    name: name || '',
     exportName,
     props,
     template,

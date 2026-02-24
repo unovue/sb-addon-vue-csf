@@ -58,6 +58,7 @@
   },
   "dependencies": {
     "@storybook/csf": "^0.1.13",
+    "@vueuse/core": "^14.2.1",
     "dedent": "^1.5.3",
     "es-toolkit": "^1.26.1",
     "esrap": "^1.2.2",

@@ -15,7 +15,6 @@ const props = defineProps<{
   name?: string
   exportName?: string
   asChild?: boolean
-  template?: (args: TArgs, context: StoryContext<TArgs>) => any
   play?: (context: any) => Promise<void> | void
   args?: Partial<TArgs>
   argTypes?: any
@@ -57,9 +56,9 @@ watch(
   { immediate: true },
 )
 
-// Check if we have a template slot/render function
+// Check if we have a template slot
 const hasTemplate = computed(() => {
-  return !!(props.template || slots.template)
+  return !!slots.template
 })
 
 // Check if we have default slot
@@ -102,10 +101,10 @@ const hasDefaultSlot = computed(() => {
       </template>
     </template>
 
-    <!-- Meta render template -->
-    <template v-else-if="renderer?.metaRenderTemplate?.value">
+    <!-- Meta render template (from defineMeta render option) -->
+    <template v-else-if="renderer?.metaRenderTemplate?.value && storyContext">
       <component
-        :is="renderer.metaRenderTemplate.value"
+        :is="renderer.metaRenderTemplate.value(rendererArgs, storyContext)"
         :args="rendererArgs"
         :context="storyContext"
       />

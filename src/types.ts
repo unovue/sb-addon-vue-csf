@@ -56,10 +56,6 @@ export interface StoryAnnotations<TArgs = Args, _TCmp = Cmp> {
    */
   exportName?: string
   /**
-   * Story name (displayed in sidebar)
-   */
-  storyName?: string
-  /**
    * Render function for the story
    */
   render?: AnnotatedStoryFn<any, TArgs>
