@@ -9,8 +9,8 @@
 
 import type { StorybookConfig } from '@storybook/vue3-vite'
 import type { Options } from 'storybook/internal/types'
-import { preTransformPlugin, transformPlugin } from './compiler/plugins.js'
-import { createIndexer } from './indexer/index.js'
+import { transformPlugin } from './compiler/plugins'
+import { createIndexer } from './indexer/index'
 
 export interface StorybookAddonVueCsfOptions extends Options {
   /**
@@ -29,9 +29,6 @@ export const viteFinal: StorybookConfig['viteFinal'] = async (
   _options: StorybookAddonVueCsfOptions,
 ) => {
   const { plugins = [], ...restConfig } = config
-
-  // Add pre-transform plugin if needed (for legacy support)
-  plugins.unshift(await preTransformPlugin())
 
   // Add main transform plugin
   plugins.push(await transformPlugin())

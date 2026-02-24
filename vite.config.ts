@@ -19,9 +19,8 @@ export default defineConfig({
   build: {
     lib: {
       entry: {
-        'index': resolve(__dirname, 'src/index.ts'),
-        'preset': resolve(__dirname, 'src/preset.ts'),
-        'runtime/create-runtime-stories': resolve(__dirname, 'src/runtime/create-runtime-stories.ts'),
+        index: resolve(__dirname, 'src/index.ts'),
+        preset: resolve(__dirname, 'src/preset.ts'),
       },
       formats: ['es'],
     },
@@ -42,10 +41,6 @@ export default defineConfig({
         'dedent',
         'zimmerframe',
       ],
-      output: {
-        preserveModules: false,
-        entryFileNames: '[name].js',
-      },
     },
     sourcemap: true,
   },

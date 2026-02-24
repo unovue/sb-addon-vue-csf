@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { getVueSfcAST, isVueStoriesFile } from './ast.js'
+import { getVueSfcAST, isVueStoriesFile } from './ast.ts'
 
 describe('ast', () => {
   describe('isVueStoriesFile', () => {

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+
 /**
  * Button component for examples
  */
@@ -19,12 +21,14 @@ const emit = defineEmits<{
   click: [event: MouseEvent]
 }>()
 
-const classes = {
-  'storybook-button': true,
-  'storybook-button--primary': props.primary,
-  'storybook-button--secondary': !props.primary,
-  [`storybook-button--${props.size}`]: true,
-}
+const classes = computed(() => {
+  return {
+    'storybook-button': true,
+    'storybook-button--primary': props.primary,
+    'storybook-button--secondary': !props.primary,
+    [`storybook-button--${props.size}`]: true,
+  }
+})
 
 const style = {
   backgroundColor: props.backgroundColor,

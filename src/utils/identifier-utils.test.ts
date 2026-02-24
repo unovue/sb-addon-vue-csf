@@ -2,9 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   isValidIdentifier,
   storyNameToExportName,
-  toCamelCase,
-  toPascalCase,
-} from './identifier-utils.js'
+} from './identifier-utils.ts'
 
 describe('identifier-utils', () => {
   describe('storyNameToExportName', () => {
@@ -27,6 +25,11 @@ describe('identifier-utils', () => {
       expect(storyNameToExportName('my-story')).toBe('MyStory')
       expect(storyNameToExportName('my-long-story-name')).toBe('MyLongStoryName')
     })
+
+    it('should preserve PascalCase names', () => {
+      expect(storyNameToExportName('WithCustomTemplate')).toBe('WithCustomTemplate')
+      expect(storyNameToExportName('PascalCase')).toBe('PascalCase')
+    })
   })
 
   describe('isValidIdentifier', () => {
@@ -43,24 +46,6 @@ describe('identifier-utils', () => {
       expect(isValidIdentifier('my-var')).toBe(false)
       expect(isValidIdentifier('my var')).toBe(false)
       expect(isValidIdentifier('my.var')).toBe(false)
-    })
-  })
-
-  describe('toCamelCase', () => {
-    it('should convert to camelCase', () => {
-      expect(toCamelCase('my story')).toBe('myStory')
-      expect(toCamelCase('my-story')).toBe('myStory')
-      expect(toCamelCase('My Story')).toBe('myStory')
-      expect(toCamelCase('MyStory')).toBe('myStory')
-    })
-  })
-
-  describe('toPascalCase', () => {
-    it('should convert to PascalCase', () => {
-      expect(toPascalCase('my story')).toBe('MyStory')
-      expect(toPascalCase('my-story')).toBe('MyStory')
-      expect(toPascalCase('My Story')).toBe('MyStory')
-      expect(toPascalCase('myStory')).toBe('MyStory')
     })
   })
 })

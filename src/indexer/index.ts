@@ -9,9 +9,9 @@
 
 import type { Indexer, IndexInput } from 'storybook/internal/types'
 import { readFileSync } from 'node:fs'
-import { getVueSfcAST } from '../parser/ast.js'
-import { extractVueASTNodes } from '../parser/extract/vue/nodes.js'
-import { storyNameToExportName } from '../utils/identifier-utils.js'
+import { getVueSfcAST } from '../parser/ast'
+import { extractVueASTNodes } from '../parser/extract/vue/nodes'
+import { storyNameToExportName } from '../utils/identifier-utils'
 
 export function createIndexer(_legacyTemplate: boolean = false): Indexer {
   return {

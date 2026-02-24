@@ -21,10 +21,12 @@
  * ```
  */
 
-import type { Cmp, Meta } from './types.js'
+import type { Cmp, Meta } from './types'
 import StoryComponent from './runtime/Story.vue'
+import StoryRendererComponent from './runtime/StoryRenderer.vue'
 
-export type { StoryContext } from './types.js'
+export type { StoryContext } from './types'
+export { StoryRendererComponent as StoryRenderer }
 
 /**
  * Define metadata for a stories file
@@ -58,4 +60,4 @@ export type {
   StoriesRepository,
   StoryAnnotations,
   TemplateRenderFn,
-} from './types.js'
+} from './types'

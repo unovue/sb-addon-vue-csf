@@ -7,10 +7,9 @@ import type { Cmp, StoryAnnotations, StoryContext } from '../types.js'
  * This component is used to define stories in .stories.vue files.
  * It receives story configuration as props and renders the story content.
  */
-import { computed, onMounted, useSlots, watch } from 'vue'
+import { computed, useSlots, watch } from 'vue'
 import { storyNameToExportName } from '../utils/identifier-utils.js'
-import { useStoriesExtractor } from './contexts/extractor.js'
-import { useStoryRenderer } from './contexts/renderer.js'
+import { useStoryRenderer } from './contexts/renderer.ts'
 
 interface StoryProps extends Partial<StoryAnnotations<any, Cmp>> {
   /**
@@ -34,10 +33,9 @@ interface StoryProps extends Partial<StoryAnnotations<any, Cmp>> {
 const props = defineProps<StoryProps>()
 const slots: { default?: Slot, template?: Slot } = useSlots()
 
-const exportName = computed<string>(() => props.exportName ?? storyNameToExportName(props.name ?? 'Unnamed'))
+const exportName = computed(() => props.exportName ?? storyNameToExportName(props.name ?? 'Unnamed'))
 
-// Get contexts
-const extractor = useStoriesExtractor()
+// Get renderer context
 const renderer = useStoryRenderer()
 
 // Computed values from renderer context
@@ -45,30 +43,15 @@ const storyContext = computed(() => renderer?.storyContext?.value)
 const rendererArgs = computed(() => renderer?.args?.value)
 
 // Check if we're currently viewing this story
-const isCurrentlyViewed = computed<boolean>(() => {
+const isCurrentlyViewed = computed(() => {
   if (!renderer?.currentStoryExportName)
     return false
-  const currentName = renderer.currentStoryExportName.value ?? renderer.currentStoryExportName
-  return !extractor?.isExtracting && currentName === exportName.value
-})
-
-// Register with extractor if in extraction mode
-onMounted(() => {
-  if (extractor?.isExtracting) {
-    extractor.register({
-      name: props.name,
-      exportName: exportName.value,
-      args: props.args,
-      parameters: props.parameters,
-      tags: props.tags,
-      play: props.play,
-    })
-  }
+  return renderer.currentStoryExportName.value === exportName.value
 })
 
 // Inject play function into story context
 watch(
-  () => storyContext.value,
+  storyContext,
   (context) => {
     if (props.play && context && isCurrentlyViewed.value) {
       // Extend playFunction with the story's play function
@@ -79,12 +62,12 @@ watch(
 )
 
 // Check if we have a template slot/render function
-const hasTemplate = computed<boolean>((): boolean => {
+const hasTemplate = computed(() => {
   return !!(props.template || slots.template)
 })
 
 // Check if we have default slot
-const hasDefaultSlot = computed<boolean>((): boolean => {
+const hasDefaultSlot = computed(() => {
   return !!slots.default
 })
 </script>

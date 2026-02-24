@@ -5,7 +5,7 @@
  * the CSF exports in the appendix.
  */
 
-import type { CompiledNodes } from '$lib/parser/extract/compiled/nodes.js'
+import type { CompiledNodes } from '$lib/parser/extract/compiled/nodes'
 import type MagicString from 'magic-string'
 
 export function removeExportDefault(code: MagicString, nodes: CompiledNodes): void {
@@ -20,6 +20,6 @@ export function removeExportDefault(code: MagicString, nodes: CompiledNodes): vo
 
   if (defaultExportRegex.test(codeStr)) {
     // Replace export default with a variable declaration
-    code.replace(defaultExportRegex, 'const __vueCsfDefault = ')
+    code.replace(defaultExportRegex, 'const __vueCsfComponent = ')
   }
 }

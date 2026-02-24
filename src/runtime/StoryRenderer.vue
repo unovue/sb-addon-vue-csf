@@ -7,8 +7,8 @@ import type { StoryContext } from '../types.js'
  * This component is responsible for rendering a single story.
  * It's used by the runtime story creator to render the currently selected story.
  */
-import { computed, provide } from 'vue'
-import { RENDERER_CONTEXT_KEY } from './contexts/renderer.js'
+import { provide, toRefs } from 'vue'
+import { RENDERER_CONTEXT_KEY } from './contexts/renderer.ts'
 
 interface Props {
   exportName: string
@@ -21,13 +21,10 @@ interface Props {
 const props = defineProps<Props>()
 
 // Provide renderer context
-const currentStoryExportName = computed(() => props.exportName)
-const args = computed(() => props.args)
-const storyContext = computed(() => props.storyContext)
-const metaRenderTemplate = computed(() => props.metaRenderTemplate)
+const { exportName, args, storyContext, metaRenderTemplate } = toRefs(props)
 
 provide(RENDERER_CONTEXT_KEY, {
-  currentStoryExportName,
+  currentStoryExportName: exportName,
   args,
   storyContext,
   metaRenderTemplate,

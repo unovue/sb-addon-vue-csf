@@ -2,7 +2,8 @@
 /**
  * Button stories using Vue CSF
  */
-import { defineMeta } from 'addon-vue-csf'
+// eslint-disable-next-line antfu/no-import-dist
+import { defineMeta } from '../dist/index'
 import Button from './Button.vue'
 
 const { Story } = defineMeta({

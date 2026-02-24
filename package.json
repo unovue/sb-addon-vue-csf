@@ -23,10 +23,6 @@
       "types": "./dist/preset.d.ts",
       "default": "./dist/preset.js"
     },
-    "./internal/create-runtime-stories": {
-      "types": "./dist/runtime/create-runtime-stories.d.ts",
-      "default": "./dist/runtime/create-runtime-stories.js"
-    },
     "./package.json": "./package.json"
   },
   "files": [
@@ -36,7 +32,8 @@
     "preset.js"
   ],
   "scripts": {
-    "build": "tsc && vite build",
+    "dev": "vite build --watch",
+    "build": "vite build",
     "build-storybook": "storybook build",
     "check": "vue-tsc --noEmit",
     "chromatic": "chromatic --exit-zero-on-changes",
