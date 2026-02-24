@@ -1,4 +1,4 @@
-# sb-sb-addon-vue-csf
+# sb-addon-vue-csf
 
 This Storybook addon allows you to write Storybook stories using Vue Single File Component syntax instead of ESM that regular CSF is based on.
 
@@ -250,9 +250,9 @@ const clickCount = ref(0);
   <DefineWrapper v-slot="{ args }">
     <div style="padding: 20px; background: #f0f9ff; border-radius: 8px;">
       <p style="margin: 0 0 10px;">Clicked {{ clickCount }} times</p>
-      <Button 
-        v-bind="args" 
-        @click="clickCount++" 
+      <Button
+        v-bind="args"
+        @click="clickCount++"
       />
     </div>
   </DefineWrapper>
