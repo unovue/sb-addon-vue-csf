@@ -4,7 +4,7 @@
  * This makes them accessible to CSF exports and the render function
  */
 
-import { createRenderTemplate, createReusableTemplate, defineMeta } from 'addon-vue-csf'
+import { createRenderTemplate, createReusableTemplate, defineMeta } from 'sb-addon-vue-csf'
 import { ref } from 'vue'
 import Button from './Button.vue'
 

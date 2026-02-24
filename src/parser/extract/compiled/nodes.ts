@@ -48,8 +48,8 @@ export async function extractCompiledASTNodes({
       defaultExport = node.declaration
     }
     else if (node.type === 'ImportDeclaration') {
-      // Track imports from addon-vue-csf
-      if (node.source.value === 'addon-vue-csf') {
+      // Track imports from sb-addon-vue-csf
+      if (node.source.value === 'sb-addon-vue-csf') {
         for (const spec of node.specifiers) {
           if (spec.type === 'ImportSpecifier' && spec.imported.type === 'Identifier') {
             storyImports.push(spec.imported.name)

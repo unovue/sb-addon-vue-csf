@@ -37,7 +37,7 @@ This project is a Storybook addon that allows developers to write Storybook stor
 
 ```vue
 <script setup>
-import { defineMeta } from 'addon-vue-csf';
+import { defineMeta } from 'sb-addon-vue-csf';
 const { Story } = defineMeta({
   component: Button,
 });
@@ -59,7 +59,7 @@ const { Story } = defineMeta({
 ### 4. Project Structure
 
 ```
-addon-vue-csf/
+sb-addon-vue-csf/
 ├── src/
 │   ├── compiler/          # Vite plugins
 │   │   ├── plugins.ts
@@ -96,19 +96,19 @@ addon-vue-csf/
 gh auth login
 
 # Create repository
-cd /Users/zernonia/Desktop/UnoVue/addon-vue-csf
-gh repo create addon-vue-csf --public --source=. --remote=origin --push
+cd /Users/zernonia/Desktop/UnoVue/sb-addon-vue-csf
+gh repo create sb-addon-vue-csf --public --source=. --remote=origin --push
 ```
 
 ### Option 2: Create Repository via Web + Git Commands
 
 1. Go to https://github.com/new
-2. Create a new repository named `addon-vue-csf`
+2. Create a new repository named `sb-addon-vue-csf`
 3. Run these commands:
 
 ```bash
-cd /Users/zernonia/Desktop/UnoVue/addon-vue-csf
-git remote add origin https://github.com/YOUR_USERNAME/addon-vue-csf.git
+cd /Users/zernonia/Desktop/UnoVue/sb-addon-vue-csf
+git remote add origin https://github.com/YOUR_USERNAME/sb-addon-vue-csf.git
 git branch -M main
 git push -u origin main
 ```
@@ -137,13 +137,13 @@ pnpm run lint:fix
 
 ```bash
 # Install the addon
-npm install --save-dev addon-vue-csf
+npm install --save-dev sb-addon-vue-csf
 
 # Update main.ts
 export default {
   stories: ['../src/**/*.stories.@(js|jsx|mjs|ts|tsx|vue)'],
   addons: [
-    'addon-vue-csf',
+    'sb-addon-vue-csf',
     // ... other addons
   ],
 }

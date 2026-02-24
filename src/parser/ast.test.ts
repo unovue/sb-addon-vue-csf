@@ -19,7 +19,7 @@ describe('ast', () => {
     it('should parse a Vue SFC', () => {
       const code = `
 <script setup>
-import { defineMeta } from 'addon-vue-csf';
+import { defineMeta } from 'sb-addon-vue-csf';
 const { Story } = defineMeta({
   title: 'Example/Button',
 });

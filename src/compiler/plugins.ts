@@ -23,7 +23,7 @@ export async function transformPlugin(): Promise<Plugin> {
   const filter = createFilter(include)
 
   return {
-    name: 'storybook:addon-vue-csf',
+    name: 'storybook:sb-addon-vue-csf',
     async transform(compiledCode, id) {
       if (!filter(id))
         return undefined

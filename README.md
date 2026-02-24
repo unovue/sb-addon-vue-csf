@@ -1,9 +1,9 @@
-# addon-vue-csf
+# sb-sb-addon-vue-csf
 
 This Storybook addon allows you to write Storybook stories using Vue Single File Component syntax instead of ESM that regular CSF is based on.
 
 ```bash
-npx storybook@latest add addon-vue-csf
+npx storybook@latest add sb-addon-vue-csf
 ```
 
 Using Vue SFC syntax makes it easier to write stories for Vue components with proper template support, slots, and composition patterns.
@@ -21,13 +21,13 @@ Using Vue SFC syntax makes it easier to write stories for Vue components with pr
 The easiest way to install the addon is with `storybook add`:
 
 ```bash
-npx storybook@latest add addon-vue-csf
+npx storybook@latest add sb-addon-vue-csf
 ```
 
 You can also add the addon manually. First, install the package:
 
 ```bash
-npm install --save-dev addon-vue-csf
+npm install --save-dev sb-addon-vue-csf
 ```
 
 Then modify your `.storybook/main.ts` Storybook configuration to include the addon and include `*.stories.vue` files:
@@ -37,7 +37,7 @@ export default {
 -  stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
 +  stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx|vue)'],
   addons: [
-+    'addon-vue-csf',
++    'sb-addon-vue-csf',
     ...
   ],
   ...
@@ -61,7 +61,7 @@ All stories files must have a "meta" (aka. "default export") defined, and its st
 
 ```vue
 <script setup lang="ts">
-import { defineMeta } from 'addon-vue-csf';
+import { defineMeta } from 'sb-addon-vue-csf';
 import MyComponent from './MyComponent.vue';
 
 //      👇 Get the Story component from the return value
@@ -147,7 +147,7 @@ If you only need a single template that you want to share among multiple stories
 
 ```vue
 <script setup lang="ts">
-import { defineMeta } from 'addon-vue-csf';
+import { defineMeta } from 'sb-addon-vue-csf';
 import MyComponent from './MyComponent.vue';
 
 const { Story } = defineMeta({
@@ -192,7 +192,7 @@ For more complex scenarios, you can use `createReusableTemplate` (re-exported fr
 ```vue
 <script lang="ts">
 // Module-level script for exports that need to be accessible to CSF
-import { createReusableTemplate, createRenderTemplate } from 'addon-vue-csf';
+import { createReusableTemplate, createRenderTemplate } from 'sb-addon-vue-csf';
 import Button from './Button.vue';
 
 const [DefineTemplate, ReuseTemplate] = createReusableTemplate();
@@ -225,7 +225,7 @@ const { Story } = defineMeta({
 
 ```vue
 <script lang="ts">
-import { createReusableTemplate, createRenderTemplate } from 'addon-vue-csf';
+import { createReusableTemplate, createRenderTemplate } from 'sb-addon-vue-csf';
 import Button from './Button.vue';
 
 const [DefineWrapper, ReuseWrapper] = createReusableTemplate();
@@ -289,7 +289,7 @@ You can define interaction tests using the `play` prop on the `Story` component:
 
 ```vue
 <script setup lang="ts">
-import { defineMeta } from 'addon-vue-csf';
+import { defineMeta } from 'sb-addon-vue-csf';
 import { expect, within } from 'storybook/test';
 import Button from './Button.vue';
 
@@ -320,7 +320,7 @@ Story template snippets can be type-safe when necessary. The type of the args ar
 
 ```vue
 <script setup lang="ts">
-import { defineMeta } from 'addon-vue-csf';
+import { defineMeta } from 'sb-addon-vue-csf';
 import type { ComponentProps } from 'vue-component-type-helpers';
 
 import MyComponent from './MyComponent.vue';
@@ -341,7 +341,7 @@ Or using Vue's `SetupContext` types:
 
 ```vue
 <script setup lang="ts">
-import { defineMeta } from 'addon-vue-csf';
+import { defineMeta } from 'sb-addon-vue-csf';
 import MyComponent from './MyComponent.vue';
 
 const { Story } = defineMeta({
@@ -485,6 +485,10 @@ When making changes to the addon source code (`src/*`), you **MUST** follow this
    ```
 
 3. **Why this is necessary**: Storybook references the static `dist/` folder, and Vite's cache can cause stale builds. Simply saving files won't reflect changes automatically.
+
+## Credits
+
+This addon is inspired by and based on the work done in [`@storybook/addon-svelte-csf`](https://github.com/storybookjs/addon-svelte-csf). Thank you to the Storybook team and contributors for creating such a great foundation for framework-specific CSF addons.
 
 ## License
 

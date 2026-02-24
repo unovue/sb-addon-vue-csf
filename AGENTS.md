@@ -1,4 +1,4 @@
-# Agent Guide for addon-vue-csf
+# Agent Guide for sb-sb-addon-vue-csf
 
 ## Project Overview
 
@@ -113,7 +113,7 @@ pnpm run clean
 
 ```vue
 <script setup>
-import { defineMeta } from 'addon-vue-csf';
+import { defineMeta } from 'sb-addon-vue-csf';
 import Button from './Button.vue';
 
 const { Story } = defineMeta({

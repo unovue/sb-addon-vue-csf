@@ -53,4 +53,4 @@ export const experimental_indexers: StorybookConfig['experimental_indexers'] = (
 /**
  * Optimize Vite dependencies
  */
-export const optimizeViteDeps = ['addon-vue-csf']
+export const optimizeViteDeps = ['sb-addon-vue-csf']

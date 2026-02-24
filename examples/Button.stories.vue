@@ -3,7 +3,7 @@
  * Button stories using Vue CSF
  */
 
-import { defineMeta } from 'addon-vue-csf'
+import { defineMeta } from 'sb-addon-vue-csf'
 import { expect, within } from 'storybook/test'
 import Button from './Button.vue'
 

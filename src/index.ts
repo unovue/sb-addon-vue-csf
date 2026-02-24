@@ -6,7 +6,7 @@
  * @example
  * ```vue
  * <script setup>
- * import { defineMeta } from 'addon-vue-csf';
+ * import { defineMeta } from 'sb-addon-vue-csf';
  * import MyComponent from './MyComponent.vue';
  *
  * const { Story } = defineMeta({
@@ -74,7 +74,7 @@ export type Args<TStoryCmp> = TStoryCmp extends typeof StoryComponent
  * @example
  * ```vue
  * <script lang="ts">
- * import { createReusableTemplate, createRenderTemplate } from 'addon-vue-csf';
+ * import { createReusableTemplate, createRenderTemplate } from 'sb-addon-vue-csf';
  * import Button from './Button.vue';
  *
  * const [DefineTemplate, ReuseTemplate] = createReusableTemplate();

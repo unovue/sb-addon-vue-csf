@@ -122,7 +122,7 @@ const hasDefaultSlot = computed(() => {
     <template v-else>
       <p>
         No story rendered. See
-        <a href="https://github.com/storybookjs/addon-vue-csf#defining-stories" target="_blank">
+        <a href="https://github.com/unovue/sb-addon-vue-csf#defining-stories" target="_blank">
           the docs
         </a>
         on how to define stories.

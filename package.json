@@ -1,13 +1,13 @@
 {
-  "name": "addon-vue-csf",
+  "name": "sb-addon-vue-csf",
   "type": "module",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "packageManager": "pnpm@10.18.0+sha512.e804f889f1cecc40d572db084eec3e4881739f8dec69c0ff10d2d1beff9a4e309383ba27b5b750059d7f4c149535b6cd0d2cb1ed3aeb739239a4284a68f40cfa",
   "description": "Allows to write stories in Vue syntax",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/storybookjs/addon-vue-csf.git"
+    "url": "git+https://github.com/unovue/sb-addon-vue-csf.git"
   },
   "keywords": [
     "storybook-addons",
@@ -44,7 +44,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prepublish": "pnpm run clean && pnpm run build",
-    "release": "pnpm run build && auto shipit",
+    "release": "bumpp package.json",
+    "pub:release": "npm publish --access public",
     "start": "pnpm run build && concurrently \"pnpm run build --watch\" \"pnpm run storybook --quiet\"",
     "storybook": "storybook dev --port 6006 --no-open",
     "test": "vitest"
@@ -83,7 +84,6 @@
     "@vitest/ui": "^4.0.18",
     "@vue/compiler-sfc": "^3.5.13",
     "@vue/test-utils": "^2.4.6",
-    "addon-vue-csf": "file:.",
     "auto": "^11.3.6",
     "chromatic": "^15.1.0",
     "concurrently": "^9.2.1",
@@ -96,6 +96,7 @@
     "prettier": "^3.8.1",
     "rimraf": "^6.1.2",
     "rollup": "^4.57.1",
+    "sb-addon-vue-csf": "file:.",
     "storybook": "^10.2.8",
     "tslib": "^2.8.1",
     "type-fest": "^5.4.4",

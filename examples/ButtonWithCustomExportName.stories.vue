@@ -9,7 +9,7 @@
  * - You want a shorter export name for a long story name
  */
 
-import { defineMeta } from 'addon-vue-csf'
+import { defineMeta } from 'sb-addon-vue-csf'
 import Button from './Button.vue'
 
 const { Story } = defineMeta({
