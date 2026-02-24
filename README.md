@@ -10,6 +10,12 @@ Using Vue SFC syntax makes it easier to write stories for Vue components with pr
 
 ## 🐣 Getting Started
 
+> [!TIP]
+> If you've initialized your Storybook project with Storybook version 8.2.0 or above, this addon may already be available for Vue projects!
+
+> [!IMPORTANT]
+> Not running the latest versions of Storybook or Vue? Be sure to check [the version compatibility section below](#version-compatibility).
+
 ### Installation
 
 The easiest way to install the addon is with `storybook add`:
@@ -24,7 +30,7 @@ You can also add the addon manually. First, install the package:
 npm install --save-dev addon-vue-csf
 ```
 
-Then modify your `main.ts` Storybook configuration to include the addon and include `*.stories.vue` files:
+Then modify your `.storybook/main.ts` Storybook configuration to include the addon and include `*.stories.vue` files:
 
 ```diff
 export default {
@@ -42,6 +48,11 @@ Restart your Storybook server for the changes to take effect.
 
 ## 🐓 Usage
 
+> [!NOTE]
+> The documentation here does not cover all of Storybook's features, only the aspects that are specific to the addon and Vue CSF. We recommend that you familiarize yourself with [Storybook's core concepts](https://storybook.js.org/docs).
+
+The [`examples`](./examples/) directory contains examples describing each feature of the addon. The [`Button.stories.vue` example](./examples/Button.stories.vue) is a good one to get started with.
+
 Vue CSF stories files must always have the `.stories.vue` extension.
 
 ### Defining the meta
@@ -49,7 +60,7 @@ Vue CSF stories files must always have the `.stories.vue` extension.
 All stories files must have a "meta" (aka. "default export") defined, and its structure follows what's described in [the official docs on the subject](https://storybook.js.org/docs/api/csf#default-export). To define the meta in Vue CSF, call the `defineMeta` function **within the script setup**, with the meta properties you want:
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { defineMeta } from 'addon-vue-csf';
 import MyComponent from './MyComponent.vue';
 
@@ -135,7 +146,7 @@ If you need composition but also want a dynamic story that reacts to args, you c
 If you only need a single template that you want to share among multiple stories, define it at the meta level:
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { defineMeta } from 'addon-vue-csf';
 import MyComponent from './MyComponent.vue';
 
@@ -165,10 +176,22 @@ function template(args) {
 
 #### Reusable templates with `createReusableTemplate`
 
-For more complex scenarios, you can use `createReusableTemplate` (re-exported from VueUse) combined with `createRenderTemplate` to define reusable templates:
+For more complex scenarios, you can use `createReusableTemplate` (re-exported from VueUse) combined with `createRenderTemplate` to define reusable templates. This pattern is useful when you need:
+
+- Interactive state in your wrapper (like counters, toggles)
+- Common layout wrappers with complex markup
+- Access to Vue composition API within the template
+
+**How it works:**
+1. `createReusableTemplate()` creates a pair of components: `DefineTemplate` (to define the template content) and `ReuseTemplate` (to render it)
+2. `createRenderTemplate(ReuseTemplate)` converts the `ReuseTemplate` component into a render function compatible with `defineMeta`
+3. The template is defined in the `<template>` block using `<DefineTemplate>`
+
+**Basic example:**
 
 ```vue
 <script lang="ts">
+// Module-level script for exports that need to be accessible to CSF
 import { createReusableTemplate, createRenderTemplate } from 'addon-vue-csf';
 import Button from './Button.vue';
 
@@ -176,7 +199,7 @@ const [DefineTemplate, ReuseTemplate] = createReusableTemplate();
 export const defaultTemplate = createRenderTemplate(ReuseTemplate);
 </script>
 
-<script setup>
+<script setup lang="ts">
 const { Story } = defineMeta({
   title: 'Example/Button',
   component: Button,
@@ -185,21 +208,65 @@ const { Story } = defineMeta({
 </script>
 
 <template>
+  <!-- Define the template content once -->
   <DefineTemplate v-slot="{ args }">
-    <div class="wrapper">
+    <div style="padding: 20px; border: 2px dashed #1ea7fd;">
       <Button v-bind="args" />
     </div>
   </DefineTemplate>
 
+  <!-- Stories automatically use the template from defineMeta -->
   <Story name="Primary" :args="{ primary: true }" />
   <Story name="Secondary" :args="{ label: 'Button' }" />
 </template>
 ```
 
-This approach is especially useful when you want to:
-- Wrap stories with common layout or styling
-- Share template definitions across multiple stories
-- Keep story definitions clean and focused on args
+**Advanced example with state:**
+
+```vue
+<script lang="ts">
+import { createReusableTemplate, createRenderTemplate } from 'addon-vue-csf';
+import Button from './Button.vue';
+
+const [DefineWrapper, ReuseWrapper] = createReusableTemplate();
+export const wrapperTemplate = createRenderTemplate(ReuseWrapper);
+</script>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+
+const { Story } = defineMeta({
+  title: 'Example/InteractiveButton',
+  component: Button,
+  render: wrapperTemplate,
+});
+
+// Reactive state accessible within the template
+const clickCount = ref(0);
+</script>
+
+<template>
+  <!-- Template with interactive state -->
+  <DefineWrapper v-slot="{ args }">
+    <div style="padding: 20px; background: #f0f9ff; border-radius: 8px;">
+      <p style="margin: 0 0 10px;">Clicked {{ clickCount }} times</p>
+      <Button 
+        v-bind="args" 
+        @click="clickCount++" 
+      />
+    </div>
+  </DefineWrapper>
+
+  <Story name="Default" :args="{ label: 'Click me' }" />
+  <Story name="Primary" :args="{ primary: true, label: 'Click me too' }" />
+</template>
+```
+
+**Key points:**
+- Use the `<script lang="ts">` (module scope) to define exports like `defaultTemplate` - this makes them available for CSF exports
+- Use `<script setup>` for your component logic, reactive state, and `defineMeta`
+- The `DefineTemplate` component must be rendered in the template to register the template content
+- Stories can still override the default template by providing their own `#template` slot
 
 #### Custom export name
 
@@ -215,6 +282,37 @@ You can explicitly define the variable name of any story by passing the `exportN
 ```
 
 At least one of the `name` or `exportName` props must be passed to the `Story` component - passing both is also valid.
+
+### Play functions
+
+You can define interaction tests using the `play` prop on the `Story` component:
+
+```vue
+<script setup lang="ts">
+import { defineMeta } from 'addon-vue-csf';
+import { expect, within } from 'storybook/test';
+import Button from './Button.vue';
+
+const { Story } = defineMeta({
+  title: 'Example/Button',
+  component: Button,
+});
+
+async function playRendersTest({ canvasElement }: { canvasElement: HTMLElement }) {
+  const canvas = within(canvasElement);
+  const button = canvas.getByRole('button');
+  expect(button).toBeInTheDocument();
+}
+</script>
+
+<template>
+  <Story
+    name="WithPlayTest"
+    :args="{ primary: true, label: 'Play Test Button' }"
+    :play="playRendersTest"
+  />
+</template>
+```
 
 ### TypeScript
 
@@ -305,21 +403,32 @@ Creates a render function for use with `defineMeta`'s render option.
 ### `<Story />` Props
 
 - `name` - The name of the story (displayed in sidebar)
-
 - `exportName` - The export name (used for the variable name in CSF)
 - `args` - Args for the story (passed as props to component)
 - `argTypes` - ArgTypes for this specific story
 - `parameters` - Parameters for this story
-- `tags` - Tags for this story
+- `tags` - Tags for this story (e.g., `['autodocs']`)
 - `play` - Play function for interactions
 - `loaders` - Loaders for this story
 - `globals` - Global parameters for this story
+- `decorators` - Decorators for this specific story
 - `asChild` - When true, renders children directly without wrapping in the meta component
 
 ### `<Story />` Slots
 
 - `default` - Default slot content (becomes children of the meta component)
 - `template` - Template slot that receives `{ args, context }` for custom rendering
+
+## How it works
+
+Vue CSF uses a Vite plugin to transform `.stories.vue` files into standard CSF format that Storybook can understand:
+
+1. **Parser** (`src/parser/`): Uses `@vue/compiler-sfc` to parse Vue SFC files and extract `defineMeta` calls and `Story` components
+2. **Compiler** (`src/compiler/`): Vite plugins transform the compiled Vue code into valid CSF exports
+3. **Indexer** (`src/indexer/`): Discovers stories in `.stories.vue` files for Storybook's sidebar
+4. **Runtime** (`src/runtime/`): Vue components (`Story.vue`, `StoryRenderer.vue`) handle rendering
+
+See [ARCHITECTURE.md](./ARCHITECTURE.md) for detailed architecture documentation.
 
 ## Version Compatibility
 
@@ -332,6 +441,24 @@ Creates a render function for use with `defineMeta`'s render option.
 | [Vite](https://github.com/vitejs/vite) | `^5.0.0 \|\| ^6.0.0 \|\| ^7.0.0` |
 | [`@vitejs/plugin-vue`](https://github.com/vitejs/vite-plugin-vue) | `^5.0.0` |
 
+## Troubleshooting
+
+### Stories not showing up in sidebar
+
+Make sure your `main.ts` includes `*.stories.vue` in the stories glob:
+
+```ts
+stories: ['../src/**/*.stories.@(js|jsx|ts|tsx|vue)'],
+```
+
+### TypeScript errors with `defineMeta`
+
+Make sure you're calling `defineMeta` inside `<script setup>` (not in regular `<script>`).
+
+### Component not rendering with args
+
+If using `asChild`, args are not passed to children. Use a template slot instead for dynamic stories.
+
 ## 🤝 Contributing
 
 This project uses [pnpm](https://pnpm.io/installation) for dependency management.
@@ -340,6 +467,24 @@ This project uses [pnpm](https://pnpm.io/installation) for dependency management
 2. Start the development mode with `pnpm start`
 3. Make your changes and add tests
 4. Run tests with `pnpm test`
+
+### Development Workflow
+
+When making changes to the addon source code (`src/*`), you **MUST** follow this workflow:
+
+1. **Build the addon** after any changes to `src/*`:
+   ```bash
+   pnpm build
+   ```
+
+2. **Restart Storybook** to pick up the new build:
+   ```bash
+   # Stop the current Storybook server (Ctrl+C)
+   # Then restart it
+   pnpm storybook
+   ```
+
+3. **Why this is necessary**: Storybook references the static `dist/` folder, and Vite's cache can cause stale builds. Simply saving files won't reflect changes automatically.
 
 ## License
 
