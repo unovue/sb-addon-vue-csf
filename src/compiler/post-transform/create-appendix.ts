@@ -26,6 +26,16 @@ export function createAppendix(
     return createStoryExport(story, exportName, metaCode, hasMetaRender, renderFunctionName)
   })
 
+  // Build excludeStories array for helper exports (render functions, reusable templates)
+  const excludeStories: string[] = []
+  if (renderFunctionName) {
+    excludeStories.push(renderFunctionName)
+  }
+
+  const excludeStoriesCode = excludeStories.length > 0
+    ? `\n  excludeStories: ${JSON.stringify(excludeStories)},`
+    : ''
+
   // Generate the runtime stories creation
   // Use a unique alias for h to avoid conflicts with user imports
   const runtimeCode = `
@@ -37,7 +47,7 @@ const meta = ${metaCode};
 export default {
   ...meta,
   // Include component reference for Storybook to extract argTypes
-  component: meta.component,
+  component: meta.component,${excludeStoriesCode}
 };
 
 ${storyExports.join('\n')}

@@ -22,6 +22,6 @@
     "isolatedModules": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*.ts", "src/**/*.vue", "env.d.ts", "examples/**/*.ts", "examples/**/*.vue"],
+  "include": ["src/**/*.ts", "src/**/*.vue", "env.d.ts", "examples/**/*.ts", "examples/**/*.vue", "**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }

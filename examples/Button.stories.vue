@@ -4,6 +4,7 @@
  */
 
 import { defineMeta } from 'addon-vue-csf'
+import { expect, within } from 'storybook/test'
 import Button from './Button.vue'
 
 const { Story } = defineMeta({
@@ -18,6 +19,14 @@ const { Story } = defineMeta({
     backgroundColor: { control: 'color' },
   },
 })
+
+// Play function for testing button renders correctly
+async function playRendersTest({ canvasElement }: { canvasElement: HTMLElement }) {
+  const canvas = within(canvasElement)
+  const button = canvas.getByRole('button')
+
+  expect(button).toBeInTheDocument()
+}
 </script>
 
 <template>
@@ -69,4 +78,11 @@ const { Story } = defineMeta({
   <Story name="WithAsChild" :args="{ label: 'As Child Button' }" as-child>
     <Button :primary="true" label="Custom Rendered Button" />
   </Story>
+
+  <!-- With play function: tests button renders correctly -->
+  <Story
+    name="WithPlayTest"
+    :args="{ primary: true, label: 'Play Test Button' }"
+    :play="playRendersTest"
+  />
 </template>

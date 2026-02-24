@@ -11,7 +11,7 @@ const config: StorybookConfig = {
   ],
   addons: [
     '@storybook/addon-docs',
-    // '@storybook/addon-vitest',
+    '@storybook/addon-vitest',
     'addon-vue-csf',
   ],
   framework: {
