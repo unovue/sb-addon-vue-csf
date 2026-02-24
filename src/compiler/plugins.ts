@@ -54,7 +54,7 @@ export async function transformPlugin(): Promise<Plugin> {
         originalCode: rawCode,
       })
 
-      console.log(magicCompiledCode.toString())
+      // console.log(magicCompiledCode.toString())
 
       return {
         code: magicCompiledCode.toString(),

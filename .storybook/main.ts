@@ -8,10 +8,11 @@ const config: StorybookConfig = {
   addons: [
     '@storybook/addon-docs',
     // '@storybook/addon-vitest',
-    '../dist/preset.js',
+    'addon-vue-csf',
   ],
   framework: {
     name: '@storybook/vue3-vite',
+    options: {},
   },
 }
 

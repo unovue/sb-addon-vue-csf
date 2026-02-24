@@ -4,9 +4,8 @@
  * This makes them accessible to CSF exports and the render function
  */
 
+import { createRenderTemplate, createReusableTemplate, defineMeta } from 'addon-vue-csf'
 import { ref } from 'vue'
-// eslint-disable-next-line antfu/no-import-dist
-import { createRenderTemplate, createReusableTemplate, defineMeta } from '../dist/index'
 import Button from './Button.vue'
 
 // Create reusable template at MODULE scope

@@ -14,6 +14,9 @@ importers:
       '@storybook/vue3':
         specifier: ^0.0.0-0 || ^8.2.0 || ^9.0.0 || ^9.1.0-0 || ^10.0.0-0 || ^10.1.0-0 || ^10.2.0-0 || ^10.3.0-0
         version: 10.2.10(storybook@10.2.10(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vue@3.5.28(typescript@5.9.3))
+      '@vueuse/core':
+        specifier: ^14.2.1
+        version: 14.2.1(vue@3.5.28(typescript@5.9.3))
       dedent:
         specifier: ^1.5.3
         version: 1.7.1
@@ -78,9 +81,9 @@ importers:
       '@vue/compiler-sfc':
         specifier: ^3.5.13
         version: 3.5.28
-      '@vueuse/core':
-        specifier: ^14.2.1
-        version: 14.2.1(vue@3.5.28(typescript@5.9.3))
+      addon-vue-csf:
+        specifier: file:.
+        version: file:(@storybook/vue3@10.2.10(storybook@10.2.10(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vue@3.5.28(typescript@5.9.3)))(@vitejs/plugin-vue@5.2.4(vite@7.3.1(@types/node@20.19.33)(yaml@2.8.2))(vue@3.5.28(typescript@5.9.3)))(storybook@10.2.10(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vite@7.3.1(@types/node@20.19.33)(yaml@2.8.2))(vue@3.5.28(typescript@5.9.3))
       auto:
         specifier: ^11.3.6
         version: 11.3.6(@types/node@20.19.33)(typescript@5.9.3)
@@ -1271,6 +1274,15 @@ packages:
     resolution: {integrity: sha512-UVJyE9MttOsBQIDKw1skb9nAwQuR5wuGD3+82K6JgJlm/Y+KI92oNsMNGZCYdDsVtRHSak0pcV5Dno5+4jh9sw==}
     engines: {node: '>=0.4.0'}
     hasBin: true
+
+  'addon-vue-csf@file:':
+    resolution: {directory: '', type: directory}
+    peerDependencies:
+      '@storybook/vue3': ^0.0.0-0 || ^8.2.0 || ^9.0.0 || ^9.1.0-0 || ^10.0.0-0 || ^10.1.0-0 || ^10.2.0-0 || ^10.3.0-0
+      '@vitejs/plugin-vue': ^5.0.0
+      storybook: ^0.0.0-0 || ^8.2.0 || ^9.0.0 || ^9.1.0-0 || ^10.0.0-0 || ^10.1.0-0 || ^10.2.0-0 || ^10.3.0-0
+      vite: ^5.0.0 || ^6.0.0 || ^7.0.0
+      vue: ^3.0.0
 
   agent-base@6.0.2:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
@@ -5079,6 +5091,23 @@ snapshots:
   acorn@7.4.1: {}
 
   acorn@8.16.0: {}
+
+  addon-vue-csf@file:(@storybook/vue3@10.2.10(storybook@10.2.10(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vue@3.5.28(typescript@5.9.3)))(@vitejs/plugin-vue@5.2.4(vite@7.3.1(@types/node@20.19.33)(yaml@2.8.2))(vue@3.5.28(typescript@5.9.3)))(storybook@10.2.10(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vite@7.3.1(@types/node@20.19.33)(yaml@2.8.2))(vue@3.5.28(typescript@5.9.3)):
+    dependencies:
+      '@storybook/csf': 0.1.13
+      '@storybook/vue3': 10.2.10(storybook@10.2.10(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vue@3.5.28(typescript@5.9.3))
+      '@vitejs/plugin-vue': 5.2.4(vite@7.3.1(@types/node@20.19.33)(yaml@2.8.2))(vue@3.5.28(typescript@5.9.3))
+      '@vueuse/core': 14.2.1(vue@3.5.28(typescript@5.9.3))
+      dedent: 1.7.1
+      es-toolkit: 1.44.0
+      esrap: 1.4.9
+      magic-string: 0.30.21
+      storybook: 10.2.10(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      vite: 7.3.1(@types/node@20.19.33)(yaml@2.8.2)
+      vue: 3.5.28(typescript@5.9.3)
+      zimmerframe: 1.1.4
+    transitivePeerDependencies:
+      - babel-plugin-macros
 
   agent-base@6.0.2:
     dependencies:

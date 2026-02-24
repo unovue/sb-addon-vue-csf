@@ -33,7 +33,7 @@
   ],
   "scripts": {
     "dev": "vite build --watch",
-    "build": "vite build",
+    "build": "tsc && vite build",
     "build-storybook": "storybook build",
     "check": "vue-tsc --noEmit",
     "chromatic": "chromatic --exit-zero-on-changes",
@@ -66,6 +66,7 @@
     "zimmerframe": "^1.1.2"
   },
   "devDependencies": {
+    "addon-vue-csf": "file:.",
     "@antfu/eslint-config": "^7.4.3",
     "@auto-it/released": "^11.3.6",
     "@chromatic-com/storybook": "^5.0.1",

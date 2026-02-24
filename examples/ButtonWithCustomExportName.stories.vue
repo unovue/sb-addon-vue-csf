@@ -8,8 +8,8 @@
  * - Your story name contains special characters that aren't valid in JavaScript identifiers
  * - You want a shorter export name for a long story name
  */
-// eslint-disable-next-line antfu/no-import-dist
-import { defineMeta } from '../dist/index'
+
+import { defineMeta } from 'addon-vue-csf'
 import Button from './Button.vue'
 
 const { Story } = defineMeta({

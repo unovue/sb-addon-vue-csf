@@ -30,8 +30,7 @@ export function createAppendix(
   // Use a unique alias for h to avoid conflicts with user imports
   const runtimeCode = `
 import { h as __vueCsfH } from 'vue';
-// import { StoryRenderer } from 'addon-vue-csf';
-import { StoryRenderer } from '../dist/index.js';
+import { StoryRenderer } from 'addon-vue-csf';
 
 const meta = ${metaCode};
 
