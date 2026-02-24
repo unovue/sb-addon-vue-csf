@@ -7,7 +7,8 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "paths": {
-      "$lib/*": ["src/*"]
+      "$lib/*": ["src/*"],
+      "@/*": ["examples/*"]
     },
     "resolveJsonModule": true,
     "types": ["node", "vitest/globals"],
@@ -21,6 +22,6 @@
     "isolatedModules": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*.ts", "src/**/*.vue", "env.d.ts"],
+  "include": ["src/**/*.ts", "src/**/*.vue", "env.d.ts", "examples/**/*.ts", "examples/**/*.vue"],
   "exclude": ["node_modules", "dist"]
 }
