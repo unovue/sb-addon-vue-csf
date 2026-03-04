@@ -10,19 +10,28 @@ import { storyNameToExportName } from '$lib/utils/identifier-utils'
 
 export function createAppendix(
   nodes: ExtractedVueNodes,
-  // eslint-disable-next-line unused-imports/no-unused-vars
   filename: string,
 ): string {
   // Use raw source if available, otherwise serialize the properties
   const metaCode = nodes.defineMeta?.rawSource || JSON.stringify(nodes.defineMeta?.properties || {})
 
+  if (nodes.stories.length === 0) {
+    console.warn(`[sb-addon-vue-csf] No <Story> components found in ${filename}. The file will produce no story exports.`)
+  }
+
   // Check if meta has a render function (by checking if we extracted a render function name)
   const renderFunctionName = nodes.defineMeta?.renderFunctionName
   const hasMetaRender = !!renderFunctionName
 
+  // Detect duplicate story export names
+  const seenExportNames = new Set<string>()
   // Generate story exports with inline render functions
   const storyExports = nodes.stories.map((story) => {
     const exportName = story.exportName || storyNameToExportName(story.name)
+    if (seenExportNames.has(exportName)) {
+      throw new Error(`[sb-addon-vue-csf] Duplicate story export name "${exportName}" in ${filename}. Each <Story> must have a unique name.`)
+    }
+    seenExportNames.add(exportName)
     return createStoryExport(story, exportName, metaCode, hasMetaRender, renderFunctionName)
   })
 

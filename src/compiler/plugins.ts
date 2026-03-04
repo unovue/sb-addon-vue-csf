@@ -29,16 +29,38 @@ export async function transformPlugin(): Promise<Plugin> {
         return undefined
 
       // Parse the compiled JavaScript
-      const compiledAST = this.parse(compiledCode)
+      let compiledAST: ReturnType<typeof this.parse>
+      try {
+        compiledAST = this.parse(compiledCode)
+      }
+      catch (error) {
+        this.error(`[sb-addon-vue-csf] Failed to parse compiled code for ${id}: ${error instanceof Error ? error.message : error}`)
+      }
 
       const magicCompiledCode = new MagicString(compiledCode)
-      const rawCode = readFileSync(id, 'utf-8')
+
+      let rawCode: string
+      try {
+        rawCode = readFileSync(id, 'utf-8')
+      }
+      catch (error) {
+        this.error(`[sb-addon-vue-csf] Failed to read file ${id}: ${error instanceof Error ? error.message : error}`)
+      }
 
       const vueAST = getVueSfcAST({ code: rawCode, filename: id })
+      if (vueAST.errors.length > 0) {
+        this.warn(`[sb-addon-vue-csf] Vue SFC parse errors in ${id}: ${vueAST.errors.map(e => e.message).join(', ')}`)
+      }
+
       const vueNodes = await extractVueASTNodes({
         ast: vueAST,
         filename: id,
       })
+
+      if (!vueNodes.defineMeta) {
+        this.warn(`[sb-addon-vue-csf] No defineMeta() found in ${id}. Ensure your story file calls defineMeta().`)
+      }
+
       const compiledASTNodes = await extractCompiledASTNodes({
         ast: compiledAST,
         filename: id,
@@ -53,8 +75,6 @@ export async function transformPlugin(): Promise<Plugin> {
         filename: id,
         originalCode: rawCode,
       })
-
-      // console.log(magicCompiledCode.toString())
 
       return {
         code: magicCompiledCode.toString(),

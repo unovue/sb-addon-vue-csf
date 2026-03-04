@@ -159,4 +159,40 @@ describe('extractStories from AST', () => {
     expect(nodes.stories[0].name).toBe('My Story!')
     expect(nodes.stories[0].exportName).toBe('MyStoryClean')
   })
+
+  it('should extract defineMeta with multiline destructuring', async () => {
+    const code = `<script setup>
+import { defineMeta } from 'sb-addon-vue-csf'
+import Button from './Button.vue'
+const {
+  Story
+} = defineMeta({ title: 'Example/Button', component: Button })
+</script>
+<template>
+  <Story name="Primary" :args="{ primary: true }" />
+</template>`
+
+    const ast = createAst(code)
+    const nodes = await extractVueASTNodes({ ast, filename: 'test.stories.vue' })
+
+    expect(nodes.defineMeta).toBeDefined()
+    expect(nodes.defineMeta?.properties.title).toBe('Example/Button')
+    expect(nodes.stories).toHaveLength(1)
+  })
+
+  it('should extract defineMeta with single-line destructuring', async () => {
+    const code = `<script setup>
+import { defineMeta } from 'sb-addon-vue-csf'
+const { Story } = defineMeta({ title: 'Test' })
+</script>
+<template>
+  <Story name="Default" />
+</template>`
+
+    const ast = createAst(code)
+    const nodes = await extractVueASTNodes({ ast, filename: 'test.stories.vue' })
+
+    expect(nodes.defineMeta).toBeDefined()
+    expect(nodes.defineMeta?.rawSource).toContain('title')
+  })
 })

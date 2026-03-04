@@ -129,11 +129,16 @@ export async function extractVueASTNodes({
  */
 function extractDefineMeta(scriptContent: string): DefineMetaNode | null {
   // Match defineMeta call with balanced braces
+  // Supports multiline destructuring: const {\n  Story\n} = defineMeta(...)
   // eslint-disable-next-line regexp/no-super-linear-backtracking
-  const defineMetaRegex = /const\s*\{\s*Story\s*\}\s*=\s*defineMeta\s*\(\s*(\{[\s\S]*?)\s*\)\s*(?:;\s*)?$/m
+  const defineMetaRegex = /const\s*\{[\s\S]*?\}\s*=\s*defineMeta\s*\(\s*(\{[\s\S]*?)\s*\)\s*(?:;\s*)?$/m
   const match = defineMetaRegex.exec(scriptContent)
 
   if (!match) {
+    // Warn if defineMeta is present but couldn't be parsed
+    if (/defineMeta\s*\(/.test(scriptContent)) {
+      console.warn('[sb-addon-vue-csf] Found defineMeta() call but could not parse it. Ensure the pattern is `const { Story } = defineMeta({ ... })`.')
+    }
     return null
   }
 

@@ -13,13 +13,25 @@ export function removeExportDefault(code: MagicString, nodes: CompiledNodes): vo
     return
   }
 
-  // Find and remove the default export
-  // This is a simplified version - in production, use proper AST manipulation
-  const codeStr = code.toString()
-  const defaultExportRegex = /export\s+default\s+/
+  // Use the AST node position for precise replacement
+  // The defaultExport node is the ExportDefaultDeclaration's declaration
+  const node = nodes.defaultExport as { start?: number, end?: number }
+  if (node.start != null) {
+    // Find 'export default' before the declaration start and replace with variable declaration
+    const codeStr = code.toString()
+    const prefix = codeStr.slice(0, node.start)
+    const exportDefaultMatch = prefix.match(/export\s+default\s+$/)
+    if (exportDefaultMatch) {
+      const exportStart = node.start - exportDefaultMatch[0].length
+      code.overwrite(exportStart, node.start, 'const __vueCsfComponent = ')
+      return
+    }
+  }
 
+  // Fallback: regex-based replacement (for cases where AST positions aren't available)
+  const defaultExportRegex = /export\s+default\s+/
+  const codeStr = code.toString()
   if (defaultExportRegex.test(codeStr)) {
-    // Replace export default with a variable declaration
     code.replace(defaultExportRegex, 'const __vueCsfComponent = ')
   }
 }
