@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest'
-import MagicString from 'magic-string'
 import type { CompiledNodes } from '$lib/parser/extract/compiled/nodes'
+import MagicString from 'magic-string'
+import { describe, expect, it } from 'vitest'
 import { removeExportDefault } from './remove-export-default'
 
 function createNodes(defaultExport: unknown = { start: 15, end: 30 }): CompiledNodes {

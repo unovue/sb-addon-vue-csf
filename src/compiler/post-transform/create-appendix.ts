@@ -27,7 +27,9 @@ export function createAppendix(
   const seenExportNames = new Set<string>()
   // Generate story exports with inline render functions
   const storyExports = nodes.stories.map((story) => {
-    const exportName = story.exportName || storyNameToExportName(story.name)
+    // Always sanitize export name — raw story names like "New Story" are
+    // not valid JS identifiers and must be converted to PascalCase
+    const exportName = storyNameToExportName(story.exportName || story.name)
     if (seenExportNames.has(exportName)) {
       throw new Error(`[sb-addon-vue-csf] Duplicate story export name "${exportName}" in ${filename}. Each <Story> must have a unique name.`)
     }
@@ -64,7 +66,7 @@ ${storyExports.join('\n')}
 // Create stories object for runtime access
 const stories = {
 ${nodes.stories.map((story) => {
-  const exportName = story.exportName || storyNameToExportName(story.name)
+  const exportName = storyNameToExportName(story.exportName || story.name)
   return `  ${exportName},`
 }).join('\n')}
 };

@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
 import type { ExtractedVueNodes } from '$lib/parser/extract/vue/nodes'
+import { describe, expect, it } from 'vitest'
 import { createAppendix } from './create-appendix'
 
 function createNodes(overrides: Partial<ExtractedVueNodes> = {}): ExtractedVueNodes {
@@ -141,8 +141,8 @@ describe('createAppendix', () => {
     const nodes = createNodes()
     const result = createAppendix(nodes, 'test.stories.vue')
 
-    expect(result).toContain("import { h as __vueCsfH } from 'vue'")
-    expect(result).toContain("import { StoryRenderer } from 'sb-addon-vue-csf'")
+    expect(result).toContain('import { h as __vueCsfH } from \'vue\'')
+    expect(result).toContain('import { StoryRenderer } from \'sb-addon-vue-csf\'')
   })
 
   it('should use exportName to convert story names', () => {

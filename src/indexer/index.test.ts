@@ -29,7 +29,8 @@ const { Story } = defineMeta({})
 </template>`,
     }
     const content = files[fileName]
-    if (!content) throw new Error(`File not found: ${fileName}`)
+    if (!content)
+      throw new Error(`File not found: ${fileName}`)
     return content
   }),
 }))

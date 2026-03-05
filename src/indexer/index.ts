@@ -27,7 +27,7 @@ export function createIndexer(_legacyTemplate: boolean = false): Indexer {
       const stories: IndexInput[] = []
 
       for (const story of nodes.stories) {
-        const exportName = story.exportName || storyNameToExportName(story.name)
+        const exportName = storyNameToExportName(story.exportName || story.name)
         stories.push({
           type: 'story',
           importPath: fileName,
