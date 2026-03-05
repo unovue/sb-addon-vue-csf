@@ -1,4 +1,4 @@
-# Agent Guide for sb-sb-addon-vue-csf
+# Agent Guide for sb-addon-vue-csf
 
 ## Project Overview
 

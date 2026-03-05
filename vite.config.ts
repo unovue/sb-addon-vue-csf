@@ -29,6 +29,7 @@ export default defineConfig({
         'vue',
         'fs',
         'node:fs',
+        'node:path',
         '@storybook/vue3',
         '@storybook/csf',
         'storybook/internal/types',
