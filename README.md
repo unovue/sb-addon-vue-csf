@@ -419,6 +419,16 @@ Creates a render function for use with `defineMeta`'s render option.
 - `default` - Default slot content (becomes children of the meta component)
 - `template` - Template slot that receives `{ args, context }` for custom rendering
 
+## Save from Controls
+
+This addon supports Storybook's "Save from Controls" feature — when you modify args in the Controls panel, you can click **"Update story"** to write the changes back to your `.stories.vue` file, or **"Create new story"** to add a new `<Story>` tag.
+
+This works out of the box with no extra configuration. The addon intercepts Storybook's save requests for `.stories.vue` files and handles them with Vue-aware parsing (using `@vue/compiler-sfc`) instead of the default Babel-based handler which only supports JS/TS files.
+
+**Behavior:**
+- **Update story**: Merges the new args with existing `:args` on the `<Story>` tag, preserving any values you didn't change
+- **Create new story**: Inserts a new `<Story>` tag after the source story with the specified name and args
+
 ## How it works
 
 Vue CSF uses a Vite plugin to transform `.stories.vue` files into standard CSF format that Storybook can understand:
@@ -427,6 +437,7 @@ Vue CSF uses a Vite plugin to transform `.stories.vue` files into standard CSF f
 2. **Compiler** (`src/compiler/`): Vite plugins transform the compiled Vue code into valid CSF exports
 3. **Indexer** (`src/indexer/`): Discovers stories in `.stories.vue` files for Storybook's sidebar
 4. **Runtime** (`src/runtime/`): Vue components (`Story.vue`, `StoryRenderer.vue`) handle rendering
+5. **Save Story** (`src/save-story/`): Handles "Save from Controls" by intercepting `saveStoryRequest` via `experimental_serverChannel` and updating `.stories.vue` files with Vue-aware parsing
 
 See [ARCHITECTURE.md](./ARCHITECTURE.md) for detailed architecture documentation.
 
