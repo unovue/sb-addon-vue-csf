@@ -35,9 +35,6 @@ jobs:
       - name: Build
         run: pnpm run build
 
-      - name: Run tests
-        run: pnpm test
-
       # Trusted Publishing: uses GitHub OIDC token instead of npm token
       - name: Publish to npm with provenance
         run: npm publish --provenance --access public

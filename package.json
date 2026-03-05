@@ -45,7 +45,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prepublish": "pnpm run clean && pnpm run build",
-    "release": "bumpp package.json",
+    "release": "pnpm test:unit && bumpp package.json",
     "pub:release": "npm publish --access public",
     "start": "pnpm run build && concurrently \"pnpm run build --watch\" \"pnpm run storybook --quiet\"",
     "storybook": "storybook dev --port 6006 --no-open",
