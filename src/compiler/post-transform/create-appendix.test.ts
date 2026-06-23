@@ -157,4 +157,39 @@ describe('createAppendix', () => {
     expect(result).toContain('export const MyStory = {')
     expect(result).toContain('name: "My Story"')
   })
+
+  it('should not leak Story name prop into args when :args is omitted', () => {
+    const nodes = createNodes({
+      stories: [
+        {
+          name: 'Default',
+          exportName: 'Default',
+          props: { name: 'Default' },
+        },
+      ],
+    })
+    const result = createAppendix(nodes, 'test.stories.vue')
+
+    expect(result).toContain('args: {}')
+    expect(result).not.toMatch(/args: \{[^}]*"name"/)
+  })
+
+  it('should keep explicit :args when Story also has a name prop', () => {
+    const nodes = createNodes({
+      stories: [
+        {
+          name: 'Description',
+          exportName: 'Description',
+          props: {
+            name: 'Description',
+            args: { description: 'description' },
+          },
+        },
+      ],
+    })
+    const result = createAppendix(nodes, 'test.stories.vue')
+
+    expect(result).toContain('args: {"description":"description"}')
+    expect(result).not.toContain('"name":"Description"')
+  })
 })
