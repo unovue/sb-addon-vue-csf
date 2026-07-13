@@ -77,6 +77,14 @@ export { stories };
   return runtimeCode
 }
 
+function getStoryArgs(story: StoryNode): Record<string, unknown> {
+  if (story.props.args !== undefined) {
+    return story.props.args as Record<string, unknown>
+  }
+
+  return {}
+}
+
 function createStoryExport(
   story: StoryNode,
   exportName: string,
@@ -84,7 +92,7 @@ function createStoryExport(
   hasMetaRender: boolean,
   renderFunctionName?: string,
 ): string {
-  const args = story.props.args || story.props || {}
+  const args = getStoryArgs(story)
 
   // Build metaRenderTemplate property
   let metaRenderTemplateProp = ''
